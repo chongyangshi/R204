@@ -36,8 +36,10 @@ class Q2 implements Runnable {
   // controlled by the parameter passed when the thread is started.
 
   public void run() {
+    System.out.println("Thread " + this.t + " started with delay factor " + arg + ".");
     delay(arg);
     result = 42;
+    System.out.println("Thread " + this.t + " done with result " + result + ".");
   }
 
   // Shared variable for use with example atomic compare and swap
@@ -52,51 +54,44 @@ class Q2 implements Runnable {
     // Start a new thread, and then wait for it to complete:
 
     if (args.length < 2) {
-      System.out.println("Usage: java Q2 delayFactor");
+      System.out.println("Usage: java Q2 delayFactor noThreads");
       System.exit(1);
     }
 
     int delayFactor = Integer.parseInt(args[0]);
+    System.out.println("Start of execution...");
+    long startTime = System.currentTimeMillis();
 
-    int cores = Runtime.getRuntime().availableProcessors();
-    int maxThreads = cores * 2;
-    System.out.println("This system has " + cores + " hardware threads.");
+    int ts = Integer.parseInt(args[1]);
+    if (ts < 1 || ts > 16) {
+      System.out.println("1 <= noThreads <= 16, exiting.");
+      System.exit(1);
+    }
 
-    Long[] results = new Long[maxThreads];
-    for (int x = 1; x < (maxThreads + 1); x++) {
-      System.out.println("Executing with " + x + " threads...");
-      Long startTime = System.currentTimeMillis();
+    try {
 
-      try {
-        Thread[] threads = new Thread[x];
-        Q2[] examples = new Q2[x];
+      Thread[] threads = new Thread[ts];
+      Q2[] examples = new Q2[ts];
 
-        for (int n = 0; n < x; n++) {
-          Q2 e = new Q2(delayFactor, (n+1));
-          Thread t = new Thread(e);
-          threads[n] = t;
-          examples[n] = e;
-          t.start();
-        }
-
-        for (int n = 0; n < x; n++) {
-          threads[n].join();
-        }
-
-      } catch (InterruptedException ie) {
-        System.out.println("Caught " + ie);
+      for (int n = 0; n < ts; n++) {
+        Q2 e = new Q2(delayFactor, (n+1));
+        Thread t = new Thread(e);
+        threads[n] = t;
+        examples[n] = e;
+        t.start();
       }
-      long endTime = System.currentTimeMillis();
-      long duration = (endTime - startTime);
 
-      System.out.println("Completed in " + duration + " ms.");
-      results[x-1] = duration;
-    }
+      for (int n = 0; n < ts; n++) {
+        threads[n].join();
+        System.out.println("Joined with thread " + (n + 1) + ", returned " + examples[n].result + ".");
+      }
 
-    System.out.print("Results 1-" + maxThreads + ": ");
-    for (int n = 0; n < maxThreads; n++) {
-      System.out.print(results[n] + " ");
+    } catch (InterruptedException ie) {
+      System.out.println("Caught " + ie);
     }
-    System.out.println("");
+    long endTime = System.currentTimeMillis();
+    long duration = (endTime - startTime);
+
+    System.out.println("Completed in " + duration + " ms.");
   }
 }
