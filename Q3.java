@@ -84,7 +84,7 @@ class Q3 {
 
     SharedArr testArray5 = new SharedArr(5);
     SharedArr testArray5000 = new SharedArr(5000);
-    int reps = 20000;
+    int reps = 50000;
     Runner runner;
     Thread t;
 
@@ -109,7 +109,7 @@ class Q3 {
     timeSum = 0;
     for (int x = 0; x < 10; x++) {
       runner = new Runner(testArray5000, 0, reps, false);
-      startTime = System.currentTimeMillis();
+      startTime = System.nanoTime();
       try {
         t = new Thread(runner);
         t.start();
@@ -117,10 +117,10 @@ class Q3 {
       } catch (InterruptedException ie) {
         System.out.println("Caught " + ie);
       }
-      endTime = System.currentTimeMillis();
+      endTime = System.nanoTime();
       timeSum += (endTime - startTime);
     }
-    System.out.println("Average with X = 5000, no lock, single thread: " + timeSum / 10 / 1000);
+    System.out.println("Average with X = 5000, no lock, single thread: " + timeSum / 10 / 1000000000);
 
     System.out.println();
 
@@ -157,7 +157,7 @@ class Q3 {
         results[ts - 1] = (float) duration / 1000000000;
       }
       for (int n = 0; n < maxThreads; n++) {
-        System.out.print(results[n]);
+        System.out.printf("%.9f", results[n]);
         if (n < (maxThreads - 1)) {
           System.out.print(", ");
         }
@@ -170,7 +170,7 @@ class Q3 {
     for (int x = 0; x < 10; x++) {
       results = new float[maxThreads];
       for (int ts = 1; ts < (maxThreads + 1); ts++) {
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         try {
           threads = new Thread[ts];
           runners = new Runner[ts];
@@ -186,12 +186,12 @@ class Q3 {
         } catch (InterruptedException ie) {
           System.out.println("Caught " + ie);
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         duration = (endTime - startTime);
-        results[ts - 1] = (float) duration / 1000;
+        results[ts - 1] = (float) duration / 1000000000;
       }
       for (int n = 0; n < maxThreads; n++) {
-        System.out.print(results[n]);
+        System.out.printf("%.9f", results[n]);
         if (n < (maxThreads - 1)) {
           System.out.print(", ");
         }

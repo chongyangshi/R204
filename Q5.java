@@ -11,7 +11,6 @@ class Q5 {
   class SharedArr {
 
     public volatile int[] integers;
-    private final Object internalLock = new Object();
     public AtomicInteger lock = new AtomicInteger(0);
 
     public void acquireRead(AtomicInteger lock) {
@@ -86,7 +85,7 @@ class Q5 {
 
     SharedArr testArray5 = new SharedArr(5);
     SharedArr testArray5000 = new SharedArr(5000);
-    int reps = 20000;
+    int reps = 50000;
     float[] results;
     Thread[] threads;
     Runner[] runners;
@@ -95,7 +94,7 @@ class Q5 {
     long duration;
 
     // X = 5, built-in lock.
-    System.out.println("Average with X = 5, built-in lock, multithread: ");
+    System.out.println("Average with X = 5, TATAS RW lock, multithread: ");
     for (int x = 0; x < 10; x++) {
       results = new float[maxThreads];
       for (int ts = 1; ts < (maxThreads + 1); ts++) {
@@ -120,7 +119,7 @@ class Q5 {
         results[ts - 1] = (float) duration / 1000000000;
       }
       for (int n = 0; n < maxThreads; n++) {
-        System.out.print(results[n]);
+        System.out.printf("%.9f", results[n]);
         if (n < (maxThreads - 1)) {
           System.out.print(", ");
         }
@@ -129,11 +128,11 @@ class Q5 {
     }
 
     // X = 5000, built-in lock.
-    System.out.println("Average with X = 5000, built-in lock, multithread: ");
+    System.out.println("Average with X = 5000, TATAS RW lock, multithread: ");
     for (int x = 0; x < 10; x++) {
       results = new float[maxThreads];
       for (int ts = 1; ts < (maxThreads + 1); ts++) {
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         try {
           threads = new Thread[ts];
           runners = new Runner[ts];
@@ -149,12 +148,12 @@ class Q5 {
         } catch (InterruptedException ie) {
           System.out.println("Caught " + ie);
         }
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         duration = (endTime - startTime);
-        results[ts - 1] = (float) duration / 1000;
+        results[ts - 1] = (float) duration / 1000000000;
       }
       for (int n = 0; n < maxThreads; n++) {
-        System.out.print(results[n]);
+        System.out.printf("%.9f", results[n]);
         if (n < (maxThreads - 1)) {
           System.out.print(", ");
         }

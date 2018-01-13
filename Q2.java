@@ -66,7 +66,7 @@ class Q2 implements Runnable {
       Long[] results = new Long[maxThreads];
       for (int x = 1; x < (maxThreads + 1); x++) {
         // System.out.println("Executing with " + x + " threads...");
-        Long startTime = System.currentTimeMillis();
+        Long startTime = System.nanoTime();
 
         try {
           Thread[] threads = new Thread[x];
@@ -87,7 +87,7 @@ class Q2 implements Runnable {
         } catch (InterruptedException ie) {
           System.out.println("Caught " + ie);
         }
-        long endTime = System.currentTimeMillis();
+        long endTime = System.nanoTime();
         long duration = (endTime - startTime);
 
         // System.out.println("Completed in " + duration + " ms.");
@@ -95,7 +95,7 @@ class Q2 implements Runnable {
       }
 
       for (int n = 0; n < maxThreads; n++) {
-        System.out.print((float)results[n] / 1000);
+        System.out.printf("%.9f", (float)results[n] / 1000000000);
         if (n < (maxThreads - 1)) {
           System.out.print(", ");
         }

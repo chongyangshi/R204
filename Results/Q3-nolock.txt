@@ -1,4 +1,4 @@
-Test conditions: random integers [1, 999] with size X = 5 or 5000, done 20000 times. X = 5 with nanoTime, while X = 5000 with currentTimeMillis.
+Test conditions: random integers [1, 999] with size X = 5 or 5000, done 50000 times. X = 5 with nanoTime, while X = 5000 with currentTimeMillis.
 First done single-threaded with no lock, then with synchronized method on 1 to 16 threads.
 All average of 10 runs.
 
