@@ -1,0 +1,6 @@
+Test conditions: random integers size X = 5 or 5000, done 20000 times. X = 5 with nanoTime, while X = 5000 with currentTimeMillis.
+First done single-threaded with no lock, then with synchronized method on 1 to 16 threads.
+All average of 10 runs.
+
+Average with X = 5, no lock, single thread: 0.0012872794
+Average with X = 5000, no lock, single thread: 0.72709996

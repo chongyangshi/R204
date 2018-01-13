@@ -1,6 +1,4 @@
-// To compile:
-//
-// javac Q2.java
+// javac Q2.java; java Q2 150
 
 import java.util.concurrent.atomic.*;
 
