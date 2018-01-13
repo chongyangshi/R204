@@ -51,7 +51,7 @@ class Q2 implements Runnable {
 
     // Start a new thread, and then wait for it to complete:
 
-    if (args.length < 2) {
+    if (args.length < 1) {
       System.out.println("Usage: java Q2 delayFactor");
       System.exit(1);
     }
@@ -95,7 +95,7 @@ class Q2 implements Runnable {
 
     System.out.print("Results 1-" + maxThreads + ": ");
     for (int n = 0; n < maxThreads; n++) {
-      System.out.print(results[n] + " ");
+      System.out.print((float)results[n] / 1000 + " ");
     }
     System.out.println("");
   }
