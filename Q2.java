@@ -62,41 +62,48 @@ class Q2 implements Runnable {
     int maxThreads = cores * 2;
     System.out.println("This system has " + cores + " hardware threads.");
 
-    Long[] results = new Long[maxThreads];
-    for (int x = 1; x < (maxThreads + 1); x++) {
-      System.out.println("Executing with " + x + " threads...");
-      Long startTime = System.currentTimeMillis();
+    System.out.println("Results from 10 runs of 1-" + maxThreads + " threads: ");
+    for (int c = 0; c < 10; c++) {
 
-      try {
-        Thread[] threads = new Thread[x];
-        Q2[] examples = new Q2[x];
+      Long[] results = new Long[maxThreads];
+      for (int x = 1; x < (maxThreads + 1); x++) {
+        // System.out.println("Executing with " + x + " threads...");
+        Long startTime = System.currentTimeMillis();
 
-        for (int n = 0; n < x; n++) {
-          Q2 e = new Q2(delayFactor, (n+1));
-          Thread t = new Thread(e);
-          threads[n] = t;
-          examples[n] = e;
-          t.start();
+        try {
+          Thread[] threads = new Thread[x];
+          Q2[] examples = new Q2[x];
+
+          for (int n = 0; n < x; n++) {
+            Q2 e = new Q2(delayFactor, (n+1));
+            Thread t = new Thread(e);
+            threads[n] = t;
+            examples[n] = e;
+            t.start();
+          }
+
+          for (int n = 0; n < x; n++) {
+            threads[n].join();
+          }
+
+        } catch (InterruptedException ie) {
+          System.out.println("Caught " + ie);
         }
+        long endTime = System.currentTimeMillis();
+        long duration = (endTime - startTime);
 
-        for (int n = 0; n < x; n++) {
-          threads[n].join();
-        }
-
-      } catch (InterruptedException ie) {
-        System.out.println("Caught " + ie);
+        // System.out.println("Completed in " + duration + " ms.");
+        results[x-1] = duration;
       }
-      long endTime = System.currentTimeMillis();
-      long duration = (endTime - startTime);
 
-      System.out.println("Completed in " + duration + " ms.");
-      results[x-1] = duration;
+      for (int n = 0; n < maxThreads; n++) {
+        System.out.print((float)results[n] / 1000);
+        if (n < (maxThreads - 1)) {
+          System.out.print(", ");
+        }
+      }
+      System.out.println("");
     }
 
-    System.out.print("Results 1-" + maxThreads + ": ");
-    for (int n = 0; n < maxThreads; n++) {
-      System.out.print((float)results[n] / 1000 + " ");
-    }
-    System.out.println("");
   }
 }
