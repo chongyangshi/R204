@@ -12,9 +12,8 @@ class Q4 {
 
     public volatile int[] integers;
     public volatile boolean lock = false;
-    private final Object internalLock = new Object();
 
-    public boolean testAndSet(boolean lock) {
+    public boolean testAndSet(boolean lock, Object internalLock) {
       boolean result;
       synchronized (internalLock) {
         result = lock;
@@ -23,10 +22,10 @@ class Q4 {
       return result;
     }
 
-    public void acquireLock(boolean lock) {
+    public void acquireLock(boolean lock, Object internalLock) {
       do {
         while (lock) {}
-      } while (testAndSet(lock));
+      } while (testAndSet(lock, internalLock));
     }
 
     public void releaseLock(boolean lock) {
@@ -49,6 +48,7 @@ class Q4 {
     int reps;
     boolean multithreading;
     SharedArr array;
+    public final Object internalLock = new Object();
     volatile int s;
 
     Runner(SharedArr array, int threadN, int reps) {
@@ -71,13 +71,13 @@ class Q4 {
 
       if (isFirstThread) {
         for (int r = 0; r < reps; r++) {
-          this.array.acquireLock(this.array.lock);
+          this.array.acquireLock(this.array.lock, this.internalLock);
           this.sum();
           this.array.releaseLock(this.array.lock);
         }
       } else {
         while (!Thread.currentThread().isInterrupted()) {
-          this.array.acquireLock(this.array.lock);
+          this.array.acquireLock(this.array.lock, this.internalLock);
           this.sum();
           this.array.releaseLock(this.array.lock);
         }
